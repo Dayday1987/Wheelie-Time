@@ -1,5 +1,5 @@
-window.canvas = document.getElementById("game");
-window.ctx = canvas.getContext("2d");
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
 
 function resize() {
     canvas.width = window.innerWidth;
@@ -8,17 +8,17 @@ function resize() {
 window.addEventListener("resize", resize);
 resize();
 
-window.state = {
+/* ===== GLOBAL GAME STATE ===== */
+const state = {
     angle: 0,
     angularVel: 0,
     speed: 0,
     crashed: false
 };
 
+/* ===== DELTA TIME LOOP ===== */
 let lastTime = performance.now();
 function gameLoop(now) {
-    console.log("tick");
-    
     const dt = Math.min((now - lastTime) / 1000, 0.033);
     lastTime = now;
 
