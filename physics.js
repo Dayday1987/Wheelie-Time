@@ -1,1 +1,52 @@
+const PHYS = {
+    gravityTorque: 9.0,
+    engineTorque: 22.0,
+    brakeTorque: 35.0,
+    inertia: 1.6,
+    balanceAngle: 0.55,
+    loopAngle: 1.05,
+    frontSlamAngle: -0.25
+};
 
+function updatePhysics(state, input, dt) {
+    if (state.crashed) return;
+
+    const clutchFactor = 1 - input.clutch;
+
+    let engineTorque =
+        PHYS.engineTorque *
+        input.throttle *
+        clutchFactor;
+
+    /* Clutch-up spike */
+    if (input.clutch < 0.1 && input.throttle > 0.7) {
+        engineTorque *= 1.3;
+    }
+
+    const gravity =
+        PHYS.gravityTorque *
+        Math.sin(state.angle - input.weight * 0.25);
+
+    const brake =
+        PHYS.brakeTorque *
+        input.brake *
+        Math.sign(state.angularVel);
+
+    const netTorque =
+        engineTorque -
+        gravity -
+        brake;
+
+    const angularAcc =
+        netTorque / PHYS.inertia;
+
+    state.angularVel += angularAcc * dt;
+    state.angle += state.angularVel * dt;
+
+    if (
+        state.angle > PHYS.loopAngle ||
+        state.angle < PHYS.frontSlamAngle
+    ) {
+        state.crashed = true;
+    }
+}
