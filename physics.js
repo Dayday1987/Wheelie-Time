@@ -1,4 +1,4 @@
-const PHYS = {
+window.PHYS = {
     gravityTorque: 9.0,
     engineTorque: 22.0,
     brakeTorque: 35.0,
@@ -8,7 +8,7 @@ const PHYS = {
     frontSlamAngle: -0.25
 };
 
-function updatePhysics(state, input, dt) {
+window.updatePhysics = function (state, input, dt) {
     if (state.crashed) return;
 
     const clutchFactor = 1 - input.clutch;
@@ -18,7 +18,6 @@ function updatePhysics(state, input, dt) {
         input.throttle *
         clutchFactor;
 
-    /* Clutch-up spike */
     if (input.clutch < 0.1 && input.throttle > 0.7) {
         engineTorque *= 1.3;
     }
@@ -30,7 +29,7 @@ function updatePhysics(state, input, dt) {
     const brake =
         PHYS.brakeTorque *
         input.brake *
-        Math.sign(state.angularVel);
+        Math.sign(state.angularVel || 1);
 
     const netTorque =
         engineTorque -
@@ -49,4 +48,4 @@ function updatePhysics(state, input, dt) {
     ) {
         state.crashed = true;
     }
-}
+};
