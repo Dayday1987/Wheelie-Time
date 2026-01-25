@@ -22,7 +22,9 @@ function gameLoop(now) {
     const dt = Math.min((now - lastTime) / 1000, 0.033);
     lastTime = now;
 
+    if (window.updatePhysics) {
     updatePhysics(state, input, dt);
+}
     render(ctx, canvas, state, input);
 
     requestAnimationFrame(gameLoop);
