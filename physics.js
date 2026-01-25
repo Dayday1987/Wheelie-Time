@@ -1,3 +1,4 @@
+console.log("physics.js loaded", typeof updatePhysics);
 window.PHYS = {
     gravityTorque: 9.0,
     engineTorque: 22.0,
