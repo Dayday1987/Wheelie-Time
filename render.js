@@ -1,33 +1,77 @@
 function render(ctx, canvas, state, input) {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    /* ===== BACKGROUND (SKY) ===== */
+    ctx.fillStyle = "#2a3142";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     ctx.save();
-    ctx.translate(canvas.width / 2, canvas.height * 0.7);
-    ctx.rotate(state.angle * 0.15);
 
-    /* Ground */
-    ctx.strokeStyle = "#444";
+    /* ===== CAMERA TRANSFORM =====
+       World rotates opposite bike angle
+       Camera is fixed to rider's head
+    */
+    const horizonY =
+        canvas.height * 0.55 +
+        state.angle * 220; // front lift visual
+
+    ctx.translate(canvas.width / 2, horizonY);
+    ctx.rotate(-state.angle * 0.85);
+
+    /* ===== SKY GRADIENT ===== */
+    const skyGrad = ctx.createLinearGradient(0, -canvas.height, 0, 0);
+    skyGrad.addColorStop(0, "#1b1f2a");
+    skyGrad.addColorStop(1, "#3b4a6b");
+    ctx.fillStyle = skyGrad;
+    ctx.fillRect(-canvas.width, -canvas.height, canvas.width * 2, canvas.height);
+
+    /* ===== GROUND ===== */
+    ctx.fillStyle = "#444";
+    ctx.fillRect(-canvas.width, 0, canvas.width * 2, canvas.height);
+
+    /* ===== GROUND LINE ===== */
+    ctx.strokeStyle = "#888";
+    ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.moveTo(-1000, 40);
-    ctx.lineTo(1000, 40);
+    ctx.moveTo(-canvas.width, 0);
+    ctx.lineTo(canvas.width, 0);
     ctx.stroke();
 
-    /* Bike */
+    ctx.restore();
+
+    /* ===== HANDLEBARS (HUD-LOCKED) ===== */
     ctx.save();
-    ctx.rotate(state.angle);
-    ctx.fillStyle = "#ccc";
-    ctx.fillRect(-60, -20, 120, 12);
+    ctx.translate(canvas.width / 2, canvas.height * 0.75);
 
-    ctx.fillStyle = "#888";
+    /* Bars */
+    ctx.strokeStyle = "#bbb";
+    ctx.lineWidth = 6;
     ctx.beginPath();
-    ctx.arc(-40, 0, 12, 0, Math.PI * 2);
-    ctx.arc(40, 0, 12, 0, Math.PI * 2);
-    ctx.fill();
-    ctx.restore();
+    ctx.moveTo(-120, 0);
+    ctx.lineTo(120, 0);
+    ctx.stroke();
+
+    /* Center clamp */
+    ctx.fillStyle = "#999";
+    ctx.fillRect(-10, -5, 20, 10);
 
     ctx.restore();
 
-    /* HUD */
+    /* ===== FRONT WHEEL (COMES INTO VIEW) ===== */
+    const wheelLift = Math.max(0, state.angle) * 280;
+
+    ctx.strokeStyle = "#aaa";
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.arc(
+        canvas.width / 2,
+        canvas.height * 0.75 - wheelLift,
+        28,
+        0,
+        Math.PI * 2
+    );
+    ctx.stroke();
+
+    /* ===== HUD ===== */
     const hud = document.getElementById("hud");
     hud.innerHTML = `
         Angle: ${(state.angle * 180 / Math.PI).toFixed(1)}°<br>
