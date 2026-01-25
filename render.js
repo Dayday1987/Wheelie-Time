@@ -1,12 +1,16 @@
 function render(ctx, canvas, state, input) {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    /* Background */
+    ctx.fillStyle = "#1b1f2a";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     ctx.save();
-    ctx.translate(canvas.width / 2, canvas.height * 0.7);
+    ctx.translate(canvas.width / 2, canvas.height * 0.6);
     ctx.rotate(state.angle * 0.15);
 
     /* Ground */
-    ctx.strokeStyle = "#444";
+    ctx.strokeStyle = "#888";
+    ctx.lineWidth = 2;
     ctx.beginPath();
     ctx.moveTo(-1000, 40);
     ctx.lineTo(1000, 40);
@@ -15,16 +19,19 @@ function render(ctx, canvas, state, input) {
     /* Bike */
     ctx.save();
     ctx.rotate(state.angle);
-    ctx.fillStyle = "#ccc";
+
+    /* Frame */
+    ctx.fillStyle = "#ffffff";
     ctx.fillRect(-60, -20, 120, 12);
 
-    ctx.fillStyle = "#888";
+    /* Wheels */
+    ctx.fillStyle = "#bbbbbb";
     ctx.beginPath();
     ctx.arc(-40, 0, 12, 0, Math.PI * 2);
     ctx.arc(40, 0, 12, 0, Math.PI * 2);
     ctx.fill();
-    ctx.restore();
 
+    ctx.restore();
     ctx.restore();
 
     /* HUD */
