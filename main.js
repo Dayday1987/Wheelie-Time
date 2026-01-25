@@ -17,6 +17,8 @@ window.state = {
 
 let lastTime = performance.now();
 function gameLoop(now) {
+    console.log("tick");
+    
     const dt = Math.min((now - lastTime) / 1000, 0.033);
     lastTime = now;
 
