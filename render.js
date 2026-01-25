@@ -1,88 +1,60 @@
 function render(ctx, canvas, state, input) {
 
-    /* ===== BACKGROUND (SKY) ===== */
-    ctx.fillStyle = "#2a3142";
+    /* Clear */
+    ctx.fillStyle = "#1c2233";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
+    /* ===== CAMERA: FIXED RIDER HEAD ===== */
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height * 0.6;
+
     ctx.save();
 
-    /* ===== CAMERA TRANSFORM =====
-       World rotates opposite bike angle
-       Camera is fixed to rider's head
-    */
-    const horizonY =
-        canvas.height * 0.55 +
-        state.angle * 220; // front lift visual
+    /* World rotates, rider does NOT */
+    ctx.translate(centerX, centerY);
+    ctx.rotate(-state.angle);
 
-    ctx.translate(canvas.width / 2, horizonY);
-    ctx.rotate(-state.angle * 0.85);
+    /* Sky */
+    ctx.fillStyle = "#2f3b5c";
+    ctx.fillRect(-2000, -2000, 4000, 2000);
 
-    /* ===== SKY GRADIENT ===== */
-    const skyGrad = ctx.createLinearGradient(0, -canvas.height, 0, 0);
-    skyGrad.addColorStop(0, "#1b1f2a");
-    skyGrad.addColorStop(1, "#3b4a6b");
-    ctx.fillStyle = skyGrad;
-    ctx.fillRect(-canvas.width, -canvas.height, canvas.width * 2, canvas.height);
+    /* Ground */
+    ctx.fillStyle = "#3a3a3a";
+    ctx.fillRect(-2000, 0, 4000, 2000);
 
-    /* ===== GROUND ===== */
-    ctx.fillStyle = "#444";
-    ctx.fillRect(-canvas.width, 0, canvas.width * 2, canvas.height);
-
-    /* ===== GROUND LINE ===== */
-    ctx.strokeStyle = "#888";
+    /* Horizon line */
+    ctx.strokeStyle = "#ffffff";
     ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.moveTo(-canvas.width, 0);
-    ctx.lineTo(canvas.width, 0);
+    ctx.moveTo(-2000, 0);
+    ctx.lineTo(2000, 0);
     ctx.stroke();
 
     ctx.restore();
 
-    /* ===== HANDLEBARS (HUD-LOCKED) ===== */
-    ctx.save();
-    ctx.translate(canvas.width / 2, canvas.height * 0.75);
-
-    /* Bars */
-    ctx.strokeStyle = "#bbb";
+    /* ===== HANDLEBARS (SCREEN LOCKED) ===== */
+    ctx.strokeStyle = "#cccccc";
     ctx.lineWidth = 6;
     ctx.beginPath();
-    ctx.moveTo(-120, 0);
-    ctx.lineTo(120, 0);
+    ctx.moveTo(centerX - 140, canvas.height * 0.8);
+    ctx.lineTo(centerX + 140, canvas.height * 0.8);
     ctx.stroke();
 
-    /* Center clamp */
-    ctx.fillStyle = "#999";
-    ctx.fillRect(-10, -5, 20, 10);
+    /* ===== FRONT WHEEL RISE ===== */
+    const wheelY =
+        canvas.height * 0.8 -
+        Math.max(0, state.angle) * 320;
 
-    ctx.restore();
-
-    /* ===== FRONT WHEEL (COMES INTO VIEW) ===== */
-    const wheelLift = Math.max(0, state.angle) * 280;
-
-    ctx.strokeStyle = "#aaa";
+    ctx.strokeStyle = "#aaaaaa";
     ctx.lineWidth = 3;
     ctx.beginPath();
-    ctx.arc(
-        canvas.width / 2,
-        canvas.height * 0.75 - wheelLift,
-        28,
-        0,
-        Math.PI * 2
-    );
+    ctx.arc(centerX, wheelY, 26, 0, Math.PI * 2);
     ctx.stroke();
 
-    /* ===== HUD ===== */
-    const hud = document.getElementById("hud");
-    hud.innerHTML = `
+    /* HUD */
+    document.getElementById("hud").innerHTML = `
         Angle: ${(state.angle * 180 / Math.PI).toFixed(1)}°<br>
         Throttle: ${input.throttle.toFixed(2)}<br>
-        Brake: ${input.brake.toFixed(2)}<br>
-        Weight: ${input.weight.toFixed(2)}<br>
-        ${state.crashed ? "<span style='color:red'>CRASH</span>" : ""}
+        Brake: ${input.brake.toFixed(2)}
     `;
-
-    document.getElementById("throttleFill").style.height =
-        input.throttle * 100 + "%";
-    document.getElementById("brakeFill").style.height =
-        input.brake * 100 + "%";
 }
