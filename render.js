@@ -6,31 +6,30 @@ function render(ctx, canvas, state, input) {
 
     /* ===== CAMERA: FIXED RIDER HEAD ===== */
     const centerX = canvas.width / 2;
-    const centerY = canvas.height * 0.6;
 
-    ctx.save();
+/* Pitch visual: front wheel up = horizon goes DOWN */
+const pitchOffset = state.angle * 260;
 
-    /* World rotates, rider does NOT */
-    ctx.translate(centerX, centerY);
-    ctx.rotate(-state.angle);
+ctx.save();
+ctx.translate(centerX, canvas.height * 0.55 + pitchOffset);
 
-    /* Sky */
-    ctx.fillStyle = "#2f3b5c";
-    ctx.fillRect(-2000, -2000, 4000, 2000);
+/* SKY */
+ctx.fillStyle = "#2f3b5c";
+ctx.fillRect(-2000, -2000, 4000, 2000);
 
-    /* Ground */
-    ctx.fillStyle = "#3a3a3a";
-    ctx.fillRect(-2000, 0, 4000, 2000);
+/* GROUND */
+ctx.fillStyle = "#3a3a3a";
+ctx.fillRect(-2000, 0, 4000, 2000);
 
-    /* Horizon line */
-    ctx.strokeStyle = "#ffffff";
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.moveTo(-2000, 0);
-    ctx.lineTo(2000, 0);
-    ctx.stroke();
+/* HORIZON LINE */
+ctx.strokeStyle = "#ffffff";
+ctx.lineWidth = 2;
+ctx.beginPath();
+ctx.moveTo(-2000, 0);
+ctx.lineTo(2000, 0);
+ctx.stroke();
 
-    ctx.restore();
+ctx.restore();
 
     /* ===== HANDLEBARS (SCREEN LOCKED) ===== */
     ctx.strokeStyle = "#cccccc";
