@@ -1,3 +1,4 @@
+console.log("render.js loaded");
 function render(ctx, canvas, state, input) {
 
     /* Background */
