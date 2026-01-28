@@ -1,56 +1,105 @@
 function render(ctx, canvas, state, input) {
 
-    /* Clear */
-    ctx.fillStyle = "#1c2233";
+    /* ===== CLEAR ===== */
+    ctx.fillStyle = "#0e1118";
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    /* ===== CAMERA: FIXED RIDER HEAD ===== */
-    const centerX = canvas.width / 2;
+    const cx = canvas.width / 2;
 
-/* Pitch visual: front wheel up = horizon goes DOWN */
-const pitchOffset = state.angle * 260;
+    /* =====================================================
+       WORLD LAYER (PITCH ONLY — NO ROTATION)
+       ===================================================== */
+    const pitchOffset = state.angle * 260;
+    const horizonY = canvas.height * 0.38 + pitchOffset;
 
-ctx.save();
-ctx.translate(centerX, canvas.height * 0.55 + pitchOffset);
+    ctx.save();
+    ctx.translate(cx, horizonY);
 
-/* SKY */
-ctx.fillStyle = "#2f3b5c";
-ctx.fillRect(-2000, -2000, 4000, 2000);
+    /* Sky */
+    const sky = ctx.createLinearGradient(0, -canvas.height, 0, 0);
+    sky.addColorStop(0, "#1c2436");
+    sky.addColorStop(1, "#3a4a6a");
+    ctx.fillStyle = sky;
+    ctx.fillRect(-2000, -2000, 4000, 2000);
 
-/* GROUND */
-ctx.fillStyle = "#3a3a3a";
-ctx.fillRect(-2000, 0, 4000, 2000);
+    /* Ground */
+    ctx.fillStyle = "#2e2e2e";
+    ctx.fillRect(-2000, 0, 4000, 2000);
 
-/* HORIZON LINE */
-ctx.strokeStyle = "#ffffff";
-ctx.lineWidth = 2;
-ctx.beginPath();
-ctx.moveTo(-2000, 0);
-ctx.lineTo(2000, 0);
-ctx.stroke();
-
-ctx.restore();
-
-    /* ===== HANDLEBARS (SCREEN LOCKED) ===== */
-    ctx.strokeStyle = "#cccccc";
-    ctx.lineWidth = 6;
+    /* Horizon line */
+    ctx.strokeStyle = "#9aa4b8";
+    ctx.lineWidth = 2;
     ctx.beginPath();
-    ctx.moveTo(centerX - 140, canvas.height * 0.8);
-    ctx.lineTo(centerX + 140, canvas.height * 0.8);
+    ctx.moveTo(-2000, 0);
+    ctx.lineTo(2000, 0);
     ctx.stroke();
 
-    /* ===== FRONT WHEEL RISE ===== */
-    const wheelY =
-        canvas.height * 0.8 -
-        Math.max(0, state.angle) * 320;
+    ctx.restore();
 
-    ctx.strokeStyle = "#aaaaaa";
+    /* =====================================================
+       COCKPIT LAYER (SCREEN LOCKED)
+       ===================================================== */
+    const cockpitY = canvas.height * 0.65;
+
+    ctx.save();
+    ctx.translate(cx, cockpitY);
+
+    /* Tank top */
+    ctx.fillStyle = "#1a1f2b";
+    ctx.beginPath();
+    ctx.moveTo(-140, 120);
+    ctx.lineTo(-90, -20);
+    ctx.lineTo(90, -20);
+    ctx.lineTo(140, 120);
+    ctx.closePath();
+    ctx.fill();
+
+    /* Triple clamp */
+    ctx.fillStyle = "#8b8f9a";
+    ctx.fillRect(-50, -25, 100, 20);
+
+    /* Handlebar */
+    ctx.strokeStyle = "#bfc3cc";
+    ctx.lineWidth = 8;
+    ctx.beginPath();
+    ctx.moveTo(-180, -15);
+    ctx.lineTo(180, -15);
+    ctx.stroke();
+
+    /* Bar ends */
+    ctx.fillStyle = "#666";
+    ctx.beginPath();
+    ctx.arc(-180, -15, 10, 0, Math.PI * 2);
+    ctx.arc(180, -15, 10, 0, Math.PI * 2);
+    ctx.fill();
+
+    /* Dash cluster */
+    ctx.fillStyle = "#10141c";
+    ctx.fillRect(-60, -75, 120, 40);
+
+    ctx.strokeStyle = "#4caf50";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.arc(0, -55, 14, Math.PI, Math.PI * 2);
+    ctx.stroke();
+
+    ctx.restore();
+
+    /* =====================================================
+       FRONT WHEEL (RISING INTO VIEW)
+       ===================================================== */
+    const wheelLift = Math.max(0, state.angle) * 360;
+    const wheelY = cockpitY + 90 - wheelLift;
+
+    ctx.strokeStyle = "#b0b0b0";
     ctx.lineWidth = 3;
     ctx.beginPath();
-    ctx.arc(centerX, wheelY, 26, 0, Math.PI * 2);
+    ctx.arc(cx, wheelY, 32, 0, Math.PI * 2);
     ctx.stroke();
 
-    /* HUD */
+    /* =====================================================
+       HUD
+       ===================================================== */
     document.getElementById("hud").innerHTML = `
         Angle: ${(state.angle * 180 / Math.PI).toFixed(1)}°<br>
         Throttle: ${input.throttle.toFixed(2)}<br>
