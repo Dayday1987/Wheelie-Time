@@ -11,13 +11,22 @@ function render(ctx, canvas, state, input) {
        WORLD LAYER (PITCH ONLY — NO ROTATION)
        ===================================================== */
     const pitchOffset = state.angle * 260;
-    const horizonY = canvas.height * 0.38 + pitchOffset;
+    const horizonY = canvas.height * 0.30 + pitchOffset * 1.15;
 
     ctx.save();
     ctx.translate(cx, horizonY);
 
     /* Sky */
     const sky = ctx.createLinearGradient(0, -canvas.height, 0, 0);
+    ctx.fillStyle = "rgba(255,255,255,0.03)";
+for (let i = 0; i < 6; i++) {
+    ctx.fillRect(
+        -2000 + i * 700,
+        -1800,
+        300,
+        900
+    );
+}
     sky.addColorStop(0, "#1c2436");
     sky.addColorStop(1, "#3a4a6a");
     ctx.fillStyle = sky;
@@ -40,7 +49,8 @@ function render(ctx, canvas, state, input) {
     /* =====================================================
        COCKPIT LAYER (SCREEN LOCKED)
        ===================================================== */
-    const cockpitY = canvas.height * 0.65;
+    const cockpitY = canvas.height * 0.72;
+    const barPitch = state.angle * 12;
 
     ctx.save();
     ctx.translate(cx, cockpitY);
@@ -63,12 +73,13 @@ function render(ctx, canvas, state, input) {
     ctx.strokeStyle = "#bfc3cc";
     ctx.lineWidth = 8;
     ctx.beginPath();
-    ctx.moveTo(-180, -15);
-    ctx.lineTo(180, -15);
+    ctx.moveTo(-220, -15);
+    ctx.lineTo(220, -15);
     ctx.stroke();
 
     /* Bar ends */
     ctx.fillStyle = "#666";
+    ctx.translate(cx, cockpitY + barPitch);
     ctx.beginPath();
     ctx.arc(-180, -15, 10, 0, Math.PI * 2);
     ctx.arc(180, -15, 10, 0, Math.PI * 2);
@@ -89,13 +100,13 @@ function render(ctx, canvas, state, input) {
     /* =====================================================
        FRONT WHEEL (RISING INTO VIEW)
        ===================================================== */
-    const wheelLift = Math.max(0, state.angle) * 360;
+    const wheelLift = Math.max(0, state.angle) * 520;
     const wheelY = cockpitY + 90 - wheelLift;
 
     ctx.strokeStyle = "#b0b0b0";
     ctx.lineWidth = 3;
     ctx.beginPath();
-    ctx.arc(cx, wheelY, 32, 0, Math.PI * 2);
+    ctx.arc(cx, wheelY, 36, 0, Math.PI * 2);
     ctx.stroke();
 
     /* =====================================================
