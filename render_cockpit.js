@@ -1,3 +1,4 @@
+console.log("COCKPIT RENDER LOADED");
 function render(ctx, canvas, state, input) {
 
     /* ===== CLEAR ===== */
