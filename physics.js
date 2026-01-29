@@ -4,8 +4,8 @@ window.PHYS = {
     engineTorque: 22.0,
     brakeTorque: 35.0,
     inertia: 1.6,
-    balanceAngle: 0.55,
-    loopAngle: 1.05,
+    balanceAngle: 0.75,
+    loopAngle: 1.25,
     frontSlamAngle: -0.25
 };
 
@@ -25,7 +25,7 @@ window.updatePhysics = function (state, input, dt) {
 
     const gravity =
         PHYS.gravityTorque *
-        Math.sin(state.angle - input.weight * 0.25);
+        Math.sin((state.angle - input.weight * 0.25) * 0.85)
 
     const brake =
         PHYS.brakeTorque *
