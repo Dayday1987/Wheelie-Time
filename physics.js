@@ -4,9 +4,9 @@ window.PHYS = {
     engineTorque: 22.0,
     brakeTorque: 35.0,
     inertia: 1.6,
-    balanceAngle: 0.75,
-    loopAngle: 1.25,
-    frontSlamAngle: -0.25
+    balanceAngle: 0.70,
+    loopAngle: 1.40,
+    frontSlamAngle: -0.10
 };
 
 window.updatePhysics = function (state, input, dt) {
