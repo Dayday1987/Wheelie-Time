@@ -3,11 +3,11 @@
    ===================================================== */
 window.PHYS = {
     gravityTorque: 9.0,
-    engineTorque: 19.0,
+    engineTorque: 11.5,
     brakeTorque: 35.0,
     inertia: 2.8,
-    balanceAngle: 0.75,    // ~43°
-    loopAngle: 1.30,       // ~74°
+    balanceAngle: 0.75,
+    loopAngle: 1.30,
     frontSlamAngle: -0.25
 };
 
