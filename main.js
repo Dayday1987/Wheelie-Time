@@ -10,7 +10,7 @@ resize();
 
 /* ===== GLOBAL GAME STATE ===== */
 const state = {
-    angle: 0,
+    angle: 0.02,      // slight rear preload (~1.1°)
     angularVel: 0,
     speed: 0,
     crashed: false
