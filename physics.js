@@ -71,10 +71,12 @@ if (state.angle <= 0 && netTorque < 0) {
 }
 
     const angularAcc =
-        netTorque / PHYS.inertia;
+    (netTorque + damping) / PHYS.inertia;
 
     state.angularVel += angularAcc * dt;
     state.angle += state.angularVel * dt;
+
+   const damping = -state.angularVel * 0.8;
 
     /* ----- FAILURE CONDITIONS ----- */
     if (
