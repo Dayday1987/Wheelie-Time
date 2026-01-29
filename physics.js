@@ -1,3 +1,27 @@
+/* =====================================================
+   PHYSICS CONSTANTS
+   ===================================================== */
+window.PHYS = {
+    gravityTorque: 9.0,
+    engineTorque: 11.5,
+    brakeTorque: 35.0,
+    inertia: 2.8,
+    balanceAngle: 0.75,
+    loopAngle: 1.30,
+    frontSlamAngle: -0.25
+};
+
+/* =====================================================
+   CENTER OF MASS OFFSET
+   ===================================================== */
+window.COM = {
+    x: 0.65,
+    y: 1.15
+};
+
+/* =====================================================
+   PHYSICS UPDATE
+   ===================================================== */
 window.updatePhysics = function (state, input, dt) {
     if (state.crashed) return;
 
@@ -9,7 +33,6 @@ window.updatePhysics = function (state, input, dt) {
         input.throttle *
         clutchFactor;
 
-    // Clutch pop impulse
     if (input.clutch < 0.1 && input.throttle > 0.7) {
         engineTorque *= 1.15;
     }
@@ -27,7 +50,7 @@ window.updatePhysics = function (state, input, dt) {
     const gravity =
         PHYS.gravityTorque * rotatedCOMx;
 
-    /* ----- REAR BRAKE (velocity aware) ----- */
+    /* ----- REAR BRAKE ----- */
     const brake =
         PHYS.brakeTorque *
         input.brake *
@@ -46,7 +69,7 @@ window.updatePhysics = function (state, input, dt) {
         return;
     }
 
-    /* ----- ANGULAR DAMPING (MUST BE BEFORE angularAcc) ----- */
+    /* ----- ANGULAR DAMPING ----- */
     const damping = -state.angularVel * 0.8;
 
     /* ----- ANGULAR MOTION ----- */
