@@ -11,7 +11,7 @@ function render(ctx, canvas, state, input) {
     /* =====================================================
        WORLD LAYER (PITCH ONLY)
        ===================================================== */
-    const pitchOffset = state.angle * 260;
+    const pitchOffset = state.angle * 380;
     const horizonY = canvas.height * 0.30 + pitchOffset * 1.15;
 
     ctx.save();
