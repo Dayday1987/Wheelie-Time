@@ -63,6 +63,13 @@ window.updatePhysics = function (state, input, dt) {
         gravity -
         brake;
 
+   /* ----- GROUND SUPPORT ----- */
+if (state.angle <= 0 && netTorque < 0) {
+    // Front wheel on ground, prevent nose dive
+    state.angularVel = 0;
+    return;
+}
+
     const angularAcc =
         netTorque / PHYS.inertia;
 
