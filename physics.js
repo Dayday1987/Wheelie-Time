@@ -3,9 +3,9 @@
    ===================================================== */
 window.PHYS = {
     gravityTorque: 9.0,
-    engineTorque: 22.0,
+    engineTorque: 19.0,
     brakeTorque: 35.0,
-    inertia: 1.6,
+    inertia: 2.8,
     balanceAngle: 0.75,    // ~43°
     loopAngle: 1.30,       // ~74°
     frontSlamAngle: -0.25
@@ -35,7 +35,7 @@ window.updatePhysics = function (state, input, dt) {
 
     // Clutch pop impulse
     if (input.clutch < 0.1 && input.throttle > 0.7) {
-        engineTorque *= 1.3;
+        engineTorque *= 1.15;
     }
 
     /* ----- COM-BASED GRAVITY ----- */
