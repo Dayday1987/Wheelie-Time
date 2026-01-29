@@ -1,27 +1,3 @@
-/* =====================================================
-   PHYSICS CONSTANTS
-   ===================================================== */
-window.PHYS = {
-    gravityTorque: 9.0,
-    engineTorque: 11.5,
-    brakeTorque: 35.0,
-    inertia: 2.8,
-    balanceAngle: 0.75,
-    loopAngle: 1.30,
-    frontSlamAngle: -0.25
-};
-
-/* =====================================================
-   CENTER OF MASS OFFSET (relative to rear axle)
-   ===================================================== */
-window.COM = {
-    x: 0.65,   // forward
-    y: 1.15    // up
-};
-
-/* =====================================================
-   PHYSICS UPDATE
-   ===================================================== */
 window.updatePhysics = function (state, input, dt) {
     if (state.crashed) return;
 
@@ -51,10 +27,11 @@ window.updatePhysics = function (state, input, dt) {
     const gravity =
         PHYS.gravityTorque * rotatedCOMx;
 
-    /* ----- REAR BRAKE ----- */
+    /* ----- REAR BRAKE (velocity aware) ----- */
     const brake =
         PHYS.brakeTorque *
         input.brake *
+        (1 + Math.abs(state.angularVel) * 0.6) *
         Math.sign(state.angularVel || 1);
 
     /* ----- NET TORQUE ----- */
@@ -63,20 +40,21 @@ window.updatePhysics = function (state, input, dt) {
         gravity -
         brake;
 
-   /* ----- GROUND SUPPORT ----- */
-if (state.angle <= 0 && netTorque < 0) {
-    // Front wheel on ground, prevent nose dive
-    state.angularVel = 0;
-    return;
-}
+    /* ----- GROUND SUPPORT ----- */
+    if (state.angle <= 0 && netTorque < 0) {
+        state.angularVel = 0;
+        return;
+    }
 
+    /* ----- ANGULAR DAMPING (MUST BE BEFORE angularAcc) ----- */
+    const damping = -state.angularVel * 0.8;
+
+    /* ----- ANGULAR MOTION ----- */
     const angularAcc =
-    (netTorque + damping) / PHYS.inertia;
+        (netTorque + damping) / PHYS.inertia;
 
     state.angularVel += angularAcc * dt;
     state.angle += state.angularVel * dt;
-
-   const damping = -state.angularVel * 0.8;
 
     /* ----- FAILURE CONDITIONS ----- */
     if (
